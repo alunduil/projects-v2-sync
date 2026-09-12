@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "types": ["node"],
+
+    "moduleDetection": "force",
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noUncheckedSideEffectImports": true,
+    "exactOptionalPropertyTypes": true,
+
+    "noEmit": true,
+    "newLine": "lf"
+  },
+  // One project covering every TypeScript file, so `tsc --noEmit` and
+  // eslint's project service see the same set. A second tsconfig for
+  // `scripts/` would be reachable by neither without extra wiring.
+  "include": ["src/**/*", "scripts/**/*", "eslint.config.js", "vitest.config.ts"]
+}

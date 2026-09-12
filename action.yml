@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: 2026 Alex Brandt <alunduil@gmail.com>
+# SPDX-License-Identifier: MIT
+---
+name: Projects v2 sync
+description: >-
+  Sync issues and pull requests onto a GitHub Projects v2 board from a
+  declarative spec.
+author: Alex Brandt
+
+inputs:
+  spec:
+    description: >-
+      Path to the sync spec. A relative path resolves against the workspace
+      root. The spec names the board, the searches that feed it, and the
+      fields to write.
+    required: true
+  token:
+    description: >-
+      Token authorised to read the source repositories and to write the target
+      Projects v2 board. The default GITHUB_TOKEN cannot write user-owned
+      projects.
+    required: true
+
+runs:
+  using: node24
+  main: dist/index.js

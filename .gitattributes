@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: 2026 Alex Brandt <alunduil@gmail.com>
+# SPDX-License-Identifier: MIT
+
+* text=auto eol=lf
+
+# The bundle is generated, and reviewing 800KB of esbuild output is not
+# review. Collapsing it keeps a pull request's diff to the sources that
+# produced it, and marks it generated in language statistics.
+dist/** -diff linguist-generated=true

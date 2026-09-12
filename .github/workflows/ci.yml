@@ -1,0 +1,92 @@
+# SPDX-FileCopyrightText: 2026 Alex Brandt <alunduil@gmail.com>
+# SPDX-License-Identifier: MIT
+---
+name: CI
+
+# Every sensor that runs on an integration event.
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # Cancel superseded pull request runs; never cancel a push to main, so every
+  # commit on it keeps a result of its own.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    name: Lint, typecheck, and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: ./.github/actions/setup-node-pnpm
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Typecheck
+        run: pnpm run typecheck
+
+      - name: Test
+        run: pnpm run test
+
+  # A Node action runs the committed bundle, so a source change that never
+  # reached dist/ ships nothing. Rebuilding and diffing is what catches it.
+  bundle:
+    name: Bundle is current
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: ./.github/actions/setup-node-pnpm
+
+      - name: Rebuild the bundle
+        run: pnpm run build
+
+      - name: Fail if dist/ differs from the rebuild
+        run: |
+          set -euo pipefail
+          if ! git diff --exit-code --stat -- dist/; then
+            echo "::error::dist/ is stale. Run 'pnpm run build' and commit the result."
+            exit 1
+          fi
+
+  # Nothing else here proves the bundle loads: the other jobs run the sources,
+  # and the bundle's CommonJS interop can only fail at runtime.
+  action:
+    name: Action loads and exits clean
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Write a spec fixture
+        run: echo '{"owner":"alunduil","title":"Inbox"}' > "${RUNNER_TEMP}/spec.json"
+
+      # The action makes no API calls, so this value is never transmitted.
+      - name: Run the action
+        uses: ./
+        with:
+          spec: ${{ runner.temp }}/spec.json
+          token: placeholder-until-the-reconciler-lands

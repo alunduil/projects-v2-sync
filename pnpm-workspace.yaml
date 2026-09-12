@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: 2026 Alex Brandt <alunduil@gmail.com>
+# SPDX-License-Identifier: MIT
+---
+# Not a workspace: pnpm reads its settings from this file, not package.json.
+
+# esbuild's postinstall fetches its platform binary, so the bundler cannot run
+# without it.
+allowBuilds:
+  esbuild: true

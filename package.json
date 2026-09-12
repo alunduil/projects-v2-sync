@@ -1,0 +1,44 @@
+{
+  "name": "projects-v2-sync",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Sync issues and pull requests onto a GitHub Projects v2 board from a declarative spec",
+  "author": "Alex Brandt <alunduil@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/alunduil/projects-v2-sync#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alunduil/projects-v2-sync.git"
+  },
+  "bugs": {
+    "url": "https://github.com/alunduil/projects-v2-sync/issues"
+  },
+  "scripts": {
+    "build": "tsx scripts/build.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --max-warnings=0",
+    "test": "vitest run",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@actions/core": "3.0.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/node": "24.13.3",
+    "@vitest/coverage-v8": "4.1.11",
+    "esbuild": "0.28.2",
+    "eslint": "10.9.1",
+    "prettier": "3.9.6",
+    "tsx": "4.23.13",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.68.0",
+    "vitest": "4.1.11"
+  },
+  "packageManager": "pnpm@11.26.0",
+  "engines": {
+    "node": ">=24.0.0",
+    "pnpm": ">=11.8.0"
+  }
+}

@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: 2026 Alex Brandt <alunduil@gmail.com>
+# SPDX-License-Identifier: MIT
+
+# Generated; reformatting would make the bundle diff unreadable.
+dist/
+
+node_modules/
+coverage/
+test-results/
+pnpm-lock.yaml
