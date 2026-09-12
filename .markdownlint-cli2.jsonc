@@ -1,0 +1,12 @@
+{
+  // SPDX-FileCopyrightText: 2026 Alex Brandt <alunduil@gmail.com>
+  // SPDX-License-Identifier: MIT
+  "config": {
+    // Prettier owns wrapping, and it will not break a URL or a table row to
+    // fit a column. Leaving MD013 on makes the two tools disagree.
+    "MD013": false,
+    // The SPDX header and the badge block are HTML.
+    "MD033": false,
+  },
+  "ignores": ["node_modules", "dist", "coverage", "test-results", "pnpm-lock.yaml"],
+}

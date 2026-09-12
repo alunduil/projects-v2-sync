@@ -1,0 +1,100 @@
+# SPDX-FileCopyrightText: 2026 Alex Brandt <alunduil@gmail.com>
+# SPDX-License-Identifier: MIT
+---
+# To install: pre-commit install --hook-type pre-commit --hook-type commit-msg
+# To run manually: pre-commit run --all-files
+
+exclude: |
+  (?x)^(
+    node_modules/.*|
+    coverage/.*|
+    test-results/.*|
+    pnpm-lock\.yaml|
+    dist/.*
+  )$
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: check-added-large-files
+        args: ['--maxkb=1024']
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: ['--fix=lf']
+      - id: check-json
+        # tsconfig.json is JSONC by convention, and TypeScript reads the
+        # comments fine; this hook's strict parser does not.
+        exclude: ^tsconfig\.json$
+      - id: check-yaml
+
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.23.2
+    hooks:
+      - id: markdownlint-cli2
+
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.38.0
+    hooks:
+      - id: yamllint
+        args: ['--strict']
+
+  # actionlint owns workflow validation: schema, expression syntax, and
+  # shellcheck over `run:` blocks.
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.12
+    hooks:
+      - id: actionlint
+
+  # REUSE.toml is the only TOML here, and it is the file the licensing gate
+  # reads, so a malformed one fails confusingly rather than loudly.
+  - repo: https://github.com/tombi-toml/tombi-pre-commit
+    rev: v1.5.2
+    hooks:
+      - id: tombi-format
+        args: ['--offline']
+      - id: tombi-lint
+        args: ['--offline']
+
+  # Every tracked file declares copyright and licence, inline or via
+  # REUSE.toml.
+  - repo: https://github.com/fsfe/reuse-tool
+    rev: v6.2.0
+    hooks:
+      - id: reuse
+
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.4.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+
+  # Project-local hooks. Versions come from package.json, so Renovate's
+  # pre-commit manager has nothing to track here. These need `pnpm install`.
+  - repo: local
+    hooks:
+      - id: prettier
+        name: prettier
+        entry: pnpm exec prettier --write
+        language: system
+        types_or: [javascript, ts, json, yaml, markdown]
+      - id: eslint
+        # --max-warnings=0 lives in the `lint` script, so the gate and a
+        # local `pnpm run lint` cannot disagree about what counts as failure.
+        name: eslint
+        entry: pnpm run lint
+        language: system
+        pass_filenames: false
+        files: \.(ts|js)$|^eslint\.config\.js$
+      - id: typecheck
+        # Covers tsconfig.json and tsconfig.scripts.json; `pnpm run typecheck`
+        # runs both, so scripts/ is type-checked rather than only linted.
+        name: typecheck
+        entry: pnpm run typecheck
+        language: system
+        pass_filenames: false
+        types: [ts]

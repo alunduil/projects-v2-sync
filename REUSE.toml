@@ -1,0 +1,40 @@
+# SPDX-FileCopyrightText: 2026 Alex Brandt <alunduil@gmail.com>
+# SPDX-License-Identifier: MIT
+
+# Copyright and licensing for files that cannot carry inline SPDX headers.
+
+version = 1
+SPDX-PackageName = "projects-v2-sync"
+SPDX-PackageSupplier = "Alex Brandt <alunduil@gmail.com>"
+SPDX-PackageDownloadLocation = "https://github.com/alunduil/projects-v2-sync"
+
+# JSON admits no comments.
+
+[[annotations]]
+path = ["**.json", ".prettierrc", ".nvmrc"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Alex Brandt <alunduil@gmail.com>"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "pnpm-lock.yaml"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Alex Brandt <alunduil@gmail.com>"
+SPDX-License-Identifier = "MIT"
+
+# The committed bundle. esbuild rewrites it wholesale on every build, so an
+# inline header would have to be re-injected by the build rather than kept in
+# the file. It aggregates the licences of everything bundled into it; the
+# dependency licences themselves travel in pnpm-lock.yaml.
+
+[[annotations]]
+path = ["dist", "dist/**"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Alex Brandt <alunduil@gmail.com>"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "LICENSE"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Alex Brandt <alunduil@gmail.com>"
+SPDX-License-Identifier = "MIT"
