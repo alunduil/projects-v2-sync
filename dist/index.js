@@ -19455,7 +19455,13 @@ async function loadSpec(specPath) {
   return spec;
 }
 function describeError(error2) {
-  return error2 instanceof Error ? error2.message : String(error2);
+  if (error2 instanceof Error) return error2.message;
+  if (typeof error2 === "string") return error2;
+  try {
+    return JSON.stringify(error2) ?? String(error2);
+  } catch {
+    return String(error2);
+  }
 }
 async function run() {
   const { specPath, token } = readInputs();

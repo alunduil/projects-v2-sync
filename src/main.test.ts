@@ -96,10 +96,16 @@ describe('describeError', () => {
     expect(describeError('spec unreadable')).toBe('spec unreadable');
   });
 
-  // Characterises current behaviour rather than endorsing it: the field is
-  // lost. Corrected in the commit that follows.
-  it('renders a thrown object as [object Object]', () => {
-    expect(describeError({ code: 'ENOENT' })).toBe('[object Object]');
+  // A bare String() would render this "[object Object]" and lose the field.
+  it('serialises a thrown object', () => {
+    expect(describeError({ code: 'ENOENT' })).toBe('{"code":"ENOENT"}');
+  });
+
+  it('falls back rather than throwing on a value it cannot serialise', () => {
+    const cyclic: Record<string, unknown> = {};
+    cyclic['self'] = cyclic;
+
+    expect(describeError(cyclic)).toBe('[object Object]');
   });
 });
 

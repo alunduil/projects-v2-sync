@@ -93,10 +93,22 @@ export async function loadSpec(specPath: string): Promise<Spec> {
  * Describes a thrown value for the action's failure message.
  *
  * `setFailed` takes `string | Error`, so a caught `unknown` has to be narrowed
- * somewhere.
+ * somewhere. Narrowing here rather than at the call site drops the "Error:"
+ * prefix `setFailed` adds — it renders an Error through `toString()` — while
+ * keeping the JSON rendering it gives every other value, which a bare
+ * `String()` would flatten to "[object Object]".
  */
 export function describeError(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
+  if (error instanceof Error) return error.message;
+  if (typeof error === 'string') return error;
+
+  try {
+    return JSON.stringify(error) ?? String(error);
+  } catch {
+    // A cyclic value cannot be serialised, and throwing from the failure
+    // handler would replace a reported failure with a crash.
+    return String(error);
+  }
 }
 
 /**
