@@ -19442,15 +19442,25 @@ function readInputs() {
     token: getInput("token", { required: true })
   };
 }
-async function run() {
-  const { specPath, token } = readInputs();
-  setSecret(token);
+function isJsonObject(value) {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+async function loadSpec(specPath) {
   info(`Reading spec from ${specPath}`);
   const contents = await readFile(specPath, "utf8");
   const spec = JSON.parse(contents);
-  if (typeof spec !== "object" || spec === null || Array.isArray(spec)) {
+  if (!isJsonObject(spec)) {
     throw new Error(`Spec at ${specPath} is not a JSON object`);
   }
+  return spec;
+}
+function describeError(error2) {
+  return error2 instanceof Error ? error2.message : String(error2);
+}
+async function run() {
+  const { specPath, token } = readInputs();
+  setSecret(token);
+  await loadSpec(specPath);
   info("Spec parsed. Reconciliation is not implemented yet; nothing was changed.");
 }
 
@@ -19458,7 +19468,7 @@ async function run() {
 try {
   await run();
 } catch (error2) {
-  setFailed(error2 instanceof Error ? error2.message : String(error2));
+  setFailed(describeError(error2));
 }
 /*! Bundled license information:
 

@@ -7,6 +7,15 @@ import { isAbsolute, resolve } from 'node:path';
 import * as core from '@actions/core';
 
 /**
+ * A parsed sync spec.
+ *
+ * Only the shape the loader can guarantee — a JSON object. The fields the
+ * reconciler reads are the spec format's concern, and get a type of their own
+ * when that format is defined.
+ */
+export type Spec = Record<string, unknown>;
+
+/**
  * The action's inputs, after resolution against the runner's workspace.
  *
  * `token` is carried as a value rather than read from the environment at the
@@ -51,12 +60,52 @@ export function readInputs(): Inputs {
 }
 
 /**
+ * Narrows a parsed JSON value to an object.
+ *
+ * `typeof` answers "object" for arrays and for `null` as well, so each has to
+ * be excluded in turn.
+ */
+export function isJsonObject(value: unknown): value is Spec {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+/**
+ * Reads the spec at `specPath` and returns it once it parses as a JSON object.
+ *
+ * A spec that is valid JSON but not an object — a bare array, a string — would
+ * otherwise reach the reconciler as something it cannot index, so the shape is
+ * checked here rather than at first use.
+ */
+export async function loadSpec(specPath: string): Promise<Spec> {
+  core.info(`Reading spec from ${specPath}`);
+
+  const contents = await readFile(specPath, 'utf8');
+  const spec: unknown = JSON.parse(contents);
+
+  if (!isJsonObject(spec)) {
+    throw new Error(`Spec at ${specPath} is not a JSON object`);
+  }
+
+  return spec;
+}
+
+/**
+ * Describes a thrown value for the action's failure message.
+ *
+ * `setFailed` takes `string | Error`, so a caught `unknown` has to be narrowed
+ * somewhere.
+ */
+export function describeError(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+/**
  * Runs a sync.
  *
- * The reconciler is not implemented yet, so this validates that the spec is
- * readable and parses as JSON, then reports what it would act on. That is
- * enough for the action to be wired end to end — `action.yml`, the bundle, and
- * a workflow calling it — without claiming behaviour it does not have.
+ * The reconciler is not implemented yet, so this loads the spec and reports
+ * that it would act on it. That is enough for the action to be wired end to
+ * end — `action.yml`, the bundle, and a workflow calling it — without claiming
+ * behaviour it does not have.
  */
 export async function run(): Promise<void> {
   const { specPath, token } = readInputs();
@@ -67,16 +116,9 @@ export async function run(): Promise<void> {
   // this is the only point that knows the value is a credential.
   core.setSecret(token);
 
-  core.info(`Reading spec from ${specPath}`);
-
-  const contents = await readFile(specPath, 'utf8');
-  const spec: unknown = JSON.parse(contents);
-
-  // `typeof` reports "object" for arrays and for null, so neither is excluded
-  // by the type check alone.
-  if (typeof spec !== 'object' || spec === null || Array.isArray(spec)) {
-    throw new Error(`Spec at ${specPath} is not a JSON object`);
-  }
+  // The loaded spec is discarded until the reconciler consumes it; loading it
+  // is still what proves the input is usable before a run claims success.
+  await loadSpec(specPath);
 
   core.info('Spec parsed. Reconciliation is not implemented yet; nothing was changed.');
 }

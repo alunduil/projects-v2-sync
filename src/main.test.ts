@@ -7,7 +7,7 @@ import { join } from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { resolveSpecPath, run } from './main.js';
+import { describeError, isJsonObject, loadSpec, resolveSpecPath, run } from './main.js';
 
 /** Writes `contents` to a spec file in a fresh temporary directory. */
 async function specFile(contents: string): Promise<string> {
@@ -50,20 +50,67 @@ describe('resolveSpecPath', () => {
   });
 });
 
+describe('isJsonObject', () => {
+  it('accepts an object', () => {
+    expect(isJsonObject({ owner: 'alunduil' })).toBe(true);
+  });
+
+  // The three values `typeof value === 'object'` alone would let through, plus
+  // a primitive to anchor the other side.
+  it.each([
+    ['an array', []],
+    ['null', null],
+    ['a string', 'inbox'],
+  ])('rejects %s', (_label, value) => {
+    expect(isJsonObject(value)).toBe(false);
+  });
+});
+
+describe('loadSpec', () => {
+  it('returns the parsed spec', async () => {
+    const path = await specFile('{"owner": "alunduil", "title": "Inbox"}');
+
+    await expect(loadSpec(path)).resolves.toStrictEqual({
+      owner: 'alunduil',
+      title: 'Inbox',
+    });
+  });
+
+  it('rejects a spec whose top level is not an object', async () => {
+    const path = await specFile('["inbox"]');
+
+    await expect(loadSpec(path)).rejects.toThrow(/not a JSON object/);
+  });
+
+  it('names the path when the spec is missing', async () => {
+    await expect(loadSpec('/nonexistent/spec.json')).rejects.toThrow(/\/nonexistent\/spec\.json/);
+  });
+});
+
+describe('describeError', () => {
+  it('uses the message of an Error, without the "Error:" prefix', () => {
+    expect(describeError(new Error('spec unreadable'))).toBe('spec unreadable');
+  });
+
+  it('passes a thrown string through', () => {
+    expect(describeError('spec unreadable')).toBe('spec unreadable');
+  });
+
+  // Characterises current behaviour rather than endorsing it: the field is
+  // lost. Corrected in the commit that follows.
+  it('renders a thrown object as [object Object]', () => {
+    expect(describeError({ code: 'ENOENT' })).toBe('[object Object]');
+  });
+});
+
 describe('run', () => {
-  it('accepts a spec that parses as a JSON object', async () => {
+  it('completes against a readable spec', async () => {
     setInputs(await specFile('{"owner": "alunduil", "title": "Inbox"}'));
 
     await expect(run()).resolves.toBeUndefined();
   });
 
-  it('rejects a spec whose top level is not an object', async () => {
-    setInputs(await specFile('["inbox"]'));
-
-    await expect(run()).rejects.toThrow(/not a JSON object/);
-  });
-
-  it('reports the path when the spec is missing', async () => {
+  it('propagates a spec failure to the caller', async () => {
     setInputs('/nonexistent/spec.json');
 
     await expect(run()).rejects.toThrow(/\/nonexistent\/spec\.json/);
