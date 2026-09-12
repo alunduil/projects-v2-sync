@@ -9,7 +9,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import { describeError, isJsonObject, loadSpec, resolveSpecPath, run } from './main.js';
 
-/** Writes `contents` to a spec file in a fresh temporary directory. */
+/** A fresh directory per call, so concurrent tests cannot collide. */
 async function specFile(contents: string): Promise<string> {
   const directory = await mkdtemp(join(tmpdir(), 'projects-v2-sync-'));
   const path = join(directory, 'spec.json');
@@ -18,11 +18,7 @@ async function specFile(contents: string): Promise<string> {
   return path;
 }
 
-/**
- * Points the action's inputs at `spec`. `core.getInput` reads `INPUT_*`, and
- * uppercases the name after replacing spaces, so these are the names it looks
- * for.
- */
+/** `core.getInput` reads `INPUT_*`, uppercased with spaces replaced. */
 function setInputs(spec: string): void {
   process.env['INPUT_SPEC'] = spec;
   process.env['INPUT_TOKEN'] = 'not-a-real-token';
@@ -55,8 +51,8 @@ describe('isJsonObject', () => {
     expect(isJsonObject({ owner: 'alunduil' })).toBe(true);
   });
 
-  // The three values `typeof value === 'object'` alone would let through, plus
-  // a primitive to anchor the other side.
+  // Arrays and `null` pass a bare `typeof` check; the string anchors the
+  // other side.
   it.each([
     ['an array', []],
     ['null', null],

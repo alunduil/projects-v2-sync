@@ -13,16 +13,15 @@ declarative in/out spec.
 
 **By [Alex Brandt](https://github.com/alunduil)**
 
-🚧 **Scaffold**: the action loads, validates its spec, and exits. The spec
-format is [#2](https://github.com/alunduil/projects-v2-sync/issues/2) and the
-reconciler is [#3](https://github.com/alunduil/projects-v2-sync/issues/3);
-until those land it changes nothing on a board.
+🚧 **Scaffold**: the action loads its spec, validates it, and exits without
+touching a board. The spec format is
+[#2](https://github.com/alunduil/projects-v2-sync/issues/2); the reconciler is
+[#3](https://github.com/alunduil/projects-v2-sync/issues/3).
 
 ## What this action does
 
-A Projects v2 board that collects work from several repositories has to be
-filled by something. GitHub's built-in "item added" workflow can't tell a pull
-request from an issue, so everything lands in one column and drifts from there.
+GitHub's built-in "item added" workflow can't tell a pull request from an
+issue, so everything lands in one column and drifts from there.
 
 This action reads a spec naming the board, the searches that feed it, and the
 fields to stamp, then reconciles the board against them — adding new items,
@@ -48,8 +47,8 @@ a column in the UI doesn't strand the sync on a stale ID.
 | `spec`  | yes      | Path to the sync spec, relative to the workspace root.    |
 | `token` | yes      | Token authorised to read the sources and write the board. |
 
-`GITHUB_TOKEN` can't write a user-owned project, which is why the token is a
-required input rather than an optional override.
+`GITHUB_TOKEN` can't write a user-owned project, so this needs a token of its
+own.
 
 ## Contributing
 

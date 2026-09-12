@@ -14,8 +14,8 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'lcov'],
       reportsDirectory: './coverage',
-      // The bundle is generated and the entry is three lines of top-level
-      // error handling; neither carries logic a coverage number describes.
+      // The bundle is generated, and the entry only wires `run` to
+      // `setFailed`. Neither carries logic a coverage number describes.
       exclude: ['dist/**', 'scripts/**', 'src/index.ts', '*.config.ts'],
     },
   },

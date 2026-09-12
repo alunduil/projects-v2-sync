@@ -43,8 +43,7 @@ jobs:
         run: pnpm run test
 
   # A Node action runs the committed bundle, so a source change that never
-  # reached dist/ ships nothing. Rebuilding and diffing is the only check that
-  # catches it -- the bundle is an input to the runner, not an output of CI.
+  # reached dist/ ships nothing. Rebuilding and diffing is what catches it.
   bundle:
     name: Bundle is current
     runs-on: ubuntu-latest
@@ -69,9 +68,8 @@ jobs:
             exit 1
           fi
 
-  # Exercises action.yml itself: the runner parses the metadata, resolves
-  # runs.main, and executes the committed bundle. Nothing else in CI proves the
-  # action is loadable, because every other job runs the sources instead.
+  # Nothing else here proves the bundle loads: the other jobs run the sources,
+  # and the bundle's CommonJS interop can only fail at runtime.
   action:
     name: Action runs
     runs-on: ubuntu-latest
@@ -86,8 +84,7 @@ jobs:
       - name: Write a spec fixture
         run: echo '{"owner":"alunduil","title":"Inbox"}' > "${RUNNER_TEMP}/spec.json"
 
-      # The reconciler is not implemented, so this reaches no API and the token
-      # is never sent anywhere. It becomes a real credential when #3 lands.
+      # The action makes no API calls, so this value is never transmitted.
       - name: Run the action
         uses: ./
         with:

@@ -43,15 +43,14 @@ repos:
       - id: yamllint
         args: ['--strict']
 
-  # actionlint owns workflow validation: schema, expression syntax, and
-  # shellcheck over `run:` blocks.
+  # actionlint owns workflow validation; yamllint above sees only the YAML.
   - repo: https://github.com/rhysd/actionlint
     rev: v1.7.12
     hooks:
       - id: actionlint
 
-  # REUSE.toml is the only TOML here, and it is the file the licensing gate
-  # reads, so a malformed one fails confusingly rather than loudly.
+  # REUSE.toml is the only TOML here, and the licensing gate reads it, so a
+  # malformed one fails confusingly.
   - repo: https://github.com/tombi-toml/tombi-pre-commit
     rev: v1.5.2
     hooks:
@@ -73,8 +72,8 @@ repos:
       - id: conventional-pre-commit
         stages: [commit-msg]
 
-  # Project-local hooks. Versions come from package.json, so Renovate's
-  # pre-commit manager has nothing to track here. These need `pnpm install`.
+  # Project-local hooks. Versions come from package.json, and these need
+  # `pnpm install` to have populated node_modules.
   - repo: local
     hooks:
       - id: prettier
@@ -91,8 +90,8 @@ repos:
         pass_filenames: false
         files: \.(ts|js)$|^eslint\.config\.js$
       - id: typecheck
-        # Covers tsconfig.json and tsconfig.scripts.json; `pnpm run typecheck`
-        # runs both, so scripts/ is type-checked rather than only linted.
+        # One tsconfig covers src/ and scripts/, so the build script is
+        # type-checked and not only linted.
         name: typecheck
         entry: pnpm run typecheck
         language: system

@@ -9,32 +9,22 @@ import * as core from '@actions/core';
 /**
  * A parsed sync spec.
  *
- * Only the shape the loader can guarantee — a JSON object. The fields the
- * reconciler reads are the spec format's concern, and get a type of their own
- * when that format is defined.
+ * Types only what the loader guarantees. The fields the reconciler reads
+ * belong to the spec format.
  */
 export type Spec = Record<string, unknown>;
 
-/**
- * The action's inputs, after resolution against the runner's workspace.
- *
- * `token` is carried as a value rather than read from the environment at the
- * point of use so that the one place reading it is the one place that has to
- * keep it out of logs.
- */
+/** The action's inputs, resolved against the runner's workspace. */
 export interface Inputs {
   /** Absolute path to the spec file. */
   specPath: string;
-  /** Token authorised against the board and the source repositories. */
+  /** Authorised against the board and the source repositories. */
   token: string;
 }
 
 /**
- * Resolves the spec path against `GITHUB_WORKSPACE`.
- *
- * Actions run with the workspace as the working directory, but a composite or
- * container step can change that, so an explicit base is safer than a relative
- * open. An already-absolute input is taken as given.
+ * An action's working directory is the workspace, but a composite or container
+ * step can change it, so a relative open is not reliable.
  */
 export function resolveSpecPath(spec: string, workspace: string | undefined): string {
   if (isAbsolute(spec)) return spec;
@@ -43,11 +33,8 @@ export function resolveSpecPath(spec: string, workspace: string | undefined): st
 }
 
 /**
- * Reads the action's inputs.
- *
- * Both inputs are `required` in `action.yml`, which makes the runner reject a
- * workflow that omits them; `required: true` here turns a blank value into a
- * failure too, which `action.yml` alone does not catch.
+ * `action.yml` marks both inputs required, which rejects a workflow that omits
+ * them. `required: true` here also rejects a blank value.
  */
 export function readInputs(): Inputs {
   return {
@@ -59,22 +46,15 @@ export function readInputs(): Inputs {
   };
 }
 
-/**
- * Narrows a parsed JSON value to an object.
- *
- * `typeof` answers "object" for arrays and for `null` as well, so each has to
- * be excluded in turn.
- */
+/** `typeof` answers "object" for arrays and for `null` too. */
 export function isJsonObject(value: unknown): value is Spec {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 /**
- * Reads the spec at `specPath` and returns it once it parses as a JSON object.
- *
- * A spec that is valid JSON but not an object — a bare array, a string — would
- * otherwise reach the reconciler as something it cannot index, so the shape is
- * checked here rather than at first use.
+ * Valid JSON that is not an object — a bare array, a string — would reach the
+ * reconciler as something it cannot index. Checking here keeps that failure at
+ * the input boundary.
  */
 export async function loadSpec(specPath: string): Promise<Spec> {
   core.info(`Reading spec from ${specPath}`);
@@ -90,13 +70,11 @@ export async function loadSpec(specPath: string): Promise<Spec> {
 }
 
 /**
- * Describes a thrown value for the action's failure message.
+ * `setFailed` accepts `string | Error`, so a caught `unknown` needs narrowing.
  *
- * `setFailed` takes `string | Error`, so a caught `unknown` has to be narrowed
- * somewhere. Narrowing here rather than at the call site drops the "Error:"
- * prefix `setFailed` adds — it renders an Error through `toString()` — while
- * keeping the JSON rendering it gives every other value, which a bare
- * `String()` would flatten to "[object Object]".
+ * Narrowing here also drops the "Error:" prefix `setFailed` adds through
+ * `toString()`. Everything else is serialised the way `setFailed` would: a
+ * bare `String()` renders an object as "[object Object]".
  */
 export function describeError(error: unknown): string {
   if (error instanceof Error) return error.message;
@@ -105,31 +83,21 @@ export function describeError(error: unknown): string {
   try {
     return JSON.stringify(error) ?? String(error);
   } catch {
-    // A cyclic value cannot be serialised, and throwing from the failure
-    // handler would replace a reported failure with a crash.
+    // Serialising a cyclic value throws, and throwing from the failure handler
+    // would replace a reported failure with a crash.
     return String(error);
   }
 }
 
-/**
- * Runs a sync.
- *
- * The reconciler is not implemented yet, so this loads the spec and reports
- * that it would act on it. That is enough for the action to be wired end to
- * end — `action.yml`, the bundle, and a workflow calling it — without claiming
- * behaviour it does not have.
- */
 export async function run(): Promise<void> {
   const { specPath, token } = readInputs();
 
-  // Registers the token with the runner's log filter. The runner masks a
-  // secret passed through `secrets.*` already; a token reaching this input by
-  // another route (a `vars` entry, a composite's literal) is not masked, and
-  // this is the only point that knows the value is a credential.
+  // The runner masks `secrets.*` values already. A token arriving by another
+  // route — a `vars` entry, a literal in a composite — is not masked, and this
+  // is the only point that knows the value is a credential.
   core.setSecret(token);
 
-  // The loaded spec is discarded until the reconciler consumes it; loading it
-  // is still what proves the input is usable before a run claims success.
+  // Called for the validation, not the result.
   await loadSpec(specPath);
 
   core.info('Spec parsed. Reconciliation is not implemented yet; nothing was changed.');

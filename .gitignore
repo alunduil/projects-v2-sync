@@ -19,6 +19,5 @@ test-results/
 *.swo
 .DS_Store
 
-# Note: dist/ is deliberately NOT ignored. A Node action runs the checked-in
-# bundle -- the runner executes runs.main straight from the cloned repository
-# with no install step -- so dist/index.js is a tracked build artifact.
+# dist/ is deliberately not ignored. A Node action runs the checked-in bundle:
+# the runner executes runs.main straight from the clone, with no install step.

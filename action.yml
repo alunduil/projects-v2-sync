@@ -17,7 +17,7 @@ inputs:
     description: >-
       Token authorised to read the source repositories and to write the target
       Projects v2 board. The default GITHUB_TOKEN cannot write user-owned
-      projects, so this is a separate credential rather than an optional input.
+      projects.
     required: true
 
 runs:

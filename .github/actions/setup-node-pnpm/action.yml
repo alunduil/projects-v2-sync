@@ -13,11 +13,11 @@ runs:
       uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
       with:
         # Single source of truth for the Node toolchain version, shared with
-        # `nvm use`. Renovate's nvm manager keeps it current.
+        # `nvm use`.
         node-version-file: .nvmrc
 
-    # After setup-node, so the pnpm shim lands on a Node that exists. Reads the
-    # version from package.json#packageManager rather than repeating it.
+    # After setup-node, so the pnpm shim lands on a Node that exists. The
+    # version comes from package.json#packageManager.
     - name: Install pnpm
       uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
       with:
