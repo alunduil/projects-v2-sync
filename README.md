@@ -8,8 +8,8 @@ SPDX-License-Identifier: MIT
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 [![REUSE status](https://img.shields.io/reuse/compliance/github.com/alunduil/projects-v2-sync?style=flat-square)](https://api.reuse.software/info/github.com/alunduil/projects-v2-sync)
 
-Mirror issues and pull requests onto a GitHub Projects v2 board from a
-declarative in/out spec.
+Sync issues and pull requests onto a GitHub Projects v2 board from a
+declarative spec.
 
 **By [Alex Brandt](https://github.com/alunduil)**
 
@@ -24,9 +24,9 @@ GitHub's built-in "item added" workflow can't tell a pull request from an
 issue, so everything lands in one column and drifts from there.
 
 This action reads a spec naming the board, the searches that feed it, and the
-fields to stamp, then reconciles the board against them — adding new items,
-correcting drifted field values, and leaving everything else alone. A clean
-re-run makes no writes.
+fields to write. It then reconciles the board against the spec: adding items
+the searches found, correcting field values that have drifted, and leaving
+everything else alone. A clean re-run makes no writes.
 
 The spec carries no field or option IDs. Names resolve at runtime, so renaming
 a column in the UI doesn't strand the sync on a stale ID.

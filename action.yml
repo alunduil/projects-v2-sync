@@ -3,15 +3,16 @@
 ---
 name: Projects v2 sync
 description: >-
-  Mirror issues and pull requests onto a GitHub Projects v2 board from a
-  declarative in/out spec.
+  Sync issues and pull requests onto a GitHub Projects v2 board from a
+  declarative spec.
 author: Alex Brandt
 
 inputs:
   spec:
     description: >-
-      Path to the sync spec, relative to the workspace root. The spec names the
-      board to sync, the searches that feed it, and the fields to stamp.
+      Path to the sync spec. A relative path resolves against the workspace
+      root. The spec names the board, the searches that feed it, and the
+      fields to write.
     required: true
   token:
     description: >-

@@ -14,9 +14,9 @@ import * as core from '@actions/core';
  */
 export type Spec = Record<string, unknown>;
 
-/** The action's inputs, resolved against the runner's workspace. */
+/** The action's inputs. */
 export interface Inputs {
-  /** Absolute path to the spec file. */
+  /** Absolute, resolved against the runner's workspace. */
   specPath: string;
   /** Authorised against the board and the source repositories. */
   token: string;
@@ -33,8 +33,8 @@ export function resolveSpecPath(spec: string, workspace: string | undefined): st
 }
 
 /**
- * `action.yml` marks both inputs required, which rejects a workflow that omits
- * them. `required: true` here also rejects a blank value.
+ * `required: true` in `action.yml` is documentation — the runner does not
+ * reject a workflow that omits the input. This is the only check that runs.
  */
 export function readInputs(): Inputs {
   return {

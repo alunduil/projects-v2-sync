@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "Mirror issues and pull requests onto a GitHub Projects v2 board from a declarative in/out spec",
+  "description": "Sync issues and pull requests onto a GitHub Projects v2 board from a declarative spec",
   "author": "Alex Brandt <alunduil@gmail.com>",
   "license": "MIT",
   "homepage": "https://github.com/alunduil/projects-v2-sync#readme",

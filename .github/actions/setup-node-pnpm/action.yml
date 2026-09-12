@@ -3,7 +3,7 @@
 ---
 name: Setup Node.js and pnpm
 description: >-
-  Install pnpm and Node.js, restore the pnpm store, and install dependencies
+  Install Node.js and pnpm, restore the pnpm store, and install dependencies
   from the frozen lockfile.
 
 runs:

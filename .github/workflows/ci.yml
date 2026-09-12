@@ -71,7 +71,7 @@ jobs:
   # Nothing else here proves the bundle loads: the other jobs run the sources,
   # and the bundle's CommonJS interop can only fail at runtime.
   action:
-    name: Action runs
+    name: Action loads and exits clean
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
