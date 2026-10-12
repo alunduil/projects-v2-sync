@@ -12,9 +12,8 @@ on:
 permissions: {}
 
 jobs:
-  # Hosted Renovate never retries a dead job and reports nowhere, but it edits
-  # the Dependency Dashboard on every healthy run, so a stale dashboard means
-  # Renovate has stopped.
+  # Hosted Renovate reports nothing when a run dies. Every healthy run edits
+  # the Dependency Dashboard, so a stale dashboard means Renovate has stopped.
   renovate-liveness:
     name: Check Renovate liveness
     runs-on: ubuntu-latest
