@@ -1,0 +1,48 @@
+# SPDX-FileCopyrightText: 2026 Alex Brandt <alunduil@gmail.com>
+# SPDX-License-Identifier: MIT
+---
+name: Daily
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+      timezone: Europe/London
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  # Hosted Renovate reports nothing when a run dies. Every healthy run edits
+  # the Dependency Dashboard, so a stale dashboard means Renovate has stopped.
+  renovate-liveness:
+    name: Check Renovate liveness
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: read
+    steps:
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const STALE_DAYS = 10;
+            const MS_PER_DAY = 86_400_000;
+            const query = [
+              `repo:${context.repo.owner}/${context.repo.repo}`,
+              'is:issue is:open in:title "Dependency Dashboard" author:app/renovate',
+            ].join(' ');
+            const { data } = await github.rest.search.issuesAndPullRequests({ q: query });
+            const dashboard = data.items[0];
+            if (!dashboard) {
+              core.setFailed(
+                'No open Dependency Dashboard: Renovate is uninstalled or disabled on this repository. ' +
+                  'Reinstall the app or re-enable the repository.',
+              );
+              return;
+            }
+            const ageDays = (Date.now() - new Date(dashboard.updated_at)) / MS_PER_DAY;
+            if (ageDays > STALE_DAYS) {
+              core.setFailed(
+                `Dependency Dashboard #${dashboard.number} last updated ${ageDays.toFixed(1)} days ago: ` +
+                  'Renovate runs are dying. Read the Mend job log, then trigger a run by hand.',
+              );
+            }
