@@ -49,6 +49,12 @@ repos:
     hooks:
       - id: actionlint
 
+  - repo: https://github.com/renovatebot/pre-commit-hooks
+    rev: 44.151.2
+    hooks:
+      - id: renovate-config-validator
+        args: [--strict, --no-global]
+
   # REUSE.toml is the only TOML here, and the licensing gate reads it, so a
   # malformed one fails confusingly.
   - repo: https://github.com/tombi-toml/tombi-pre-commit
