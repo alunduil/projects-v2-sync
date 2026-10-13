@@ -58,7 +58,7 @@ repos:
   # REUSE.toml is the only TOML here, and the licensing gate reads it, so a
   # malformed one fails confusingly.
   - repo: https://github.com/tombi-toml/tombi-pre-commit
-    rev: v1.5.2
+    rev: v1.7.3
     hooks:
       - id: tombi-format
         args: ['--offline']
