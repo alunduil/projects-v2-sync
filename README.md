@@ -104,8 +104,10 @@ pnpm run test
 pnpm run build
 ```
 
-`pre-commit run --all-files` gates every pull request. The authoritative hook
-list is [`.pre-commit-config.yaml`](.pre-commit-config.yaml).
+[`prek`](https://prek.j178.dev) runs the hooks in
+[`.pre-commit-config.yaml`](.pre-commit-config.yaml), and they gate every pull
+request. Run `prek install --hook-type pre-commit --hook-type commit-msg` once
+per clone, or `prek run --all-files` by hand.
 
 `dist/` is committed, because a Node action runs the checked-in bundle with no
 install step on the runner. Rebuild and commit it in the same change as any
