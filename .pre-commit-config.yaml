@@ -1,9 +1,6 @@
 # SPDX-FileCopyrightText: 2026 Alex Brandt <alunduil@gmail.com>
 # SPDX-License-Identifier: MIT
 ---
-# To install: prek install --hook-type pre-commit --hook-type commit-msg
-# To run manually: prek run --all-files
-
 exclude: |
   (?x)^(
     node_modules/.*|

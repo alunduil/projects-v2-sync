@@ -104,10 +104,12 @@ pnpm run test
 pnpm run build
 ```
 
-[`prek`](https://prek.j178.dev) runs the hooks in
-[`.pre-commit-config.yaml`](.pre-commit-config.yaml), and they gate every pull
-request. Run `prek install --hook-type pre-commit --hook-type commit-msg` once
-per clone, or `prek run --all-files` by hand.
+The hooks in [`.pre-commit-config.yaml`](.pre-commit-config.yaml) gate every
+pull request. Install them with [`prek`](https://prek.j178.dev) once per clone:
+
+```console
+prek install --hook-type pre-commit --hook-type commit-msg
+```
 
 `dist/` is committed, because a Node action runs the checked-in bundle with no
 install step on the runner. Rebuild and commit it in the same change as any
