@@ -25,6 +25,11 @@
         "replacement"
       ],
       "minimumReleaseAge": null
+    },
+    {
+      "description": "typescript-eslint doesn't support TypeScript 7 yet (#58)",
+      "matchPackageNames": ["typescript"],
+      "allowedVersions": "<7"
     }
   ]
 }
