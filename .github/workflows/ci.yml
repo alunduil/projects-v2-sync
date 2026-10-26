@@ -42,6 +42,17 @@ jobs:
       - name: Test
         run: pnpm run test
 
+  # Dependency review compares a pull request's base and head; a push has none.
+  dependency-review:
+    name: Review dependencies
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Review dependency changes
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+
   # A Node action runs the committed bundle, so a source change that never
   # reached dist/ ships nothing. Rebuilding and diffing is what catches it.
   bundle:
