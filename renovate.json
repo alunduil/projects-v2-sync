@@ -25,6 +25,11 @@
         "replacement"
       ],
       "minimumReleaseAge": null
+    },
+    {
+      "description": "Hold TypeScript below 7 until typescript-eslint supports it (#58)",
+      "matchPackageNames": ["typescript"],
+      "allowedVersions": "<7"
     }
   ]
 }
