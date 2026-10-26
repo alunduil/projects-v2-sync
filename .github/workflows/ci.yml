@@ -42,8 +42,7 @@ jobs:
       - name: Test
         run: pnpm run test
 
-  # Dependency review compares a pull request's base and head through the API,
-  # so a push has nothing to review and the job needs no checkout.
+  # Dependency review compares a pull request's base and head; a push has none.
   dependency-review:
     name: Review dependencies
     if: github.event_name == 'pull_request'
