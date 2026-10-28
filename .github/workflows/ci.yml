@@ -33,9 +33,12 @@ jobs:
 
       - uses: ./.github/actions/setup-node-pnpm
 
-      # Lint and typecheck run as hooks.
+      # Lint and typecheck run as hooks. The bundle job owns the stale-dist/
+      # failure, so the build hook skips here rather than report it twice.
       - name: Run hooks
         uses: j178/prek-action@44924fe9ef4a6f88253c4b6b1bf11c689d3ce53d # v3.1.0
+        env:
+          SKIP: build
         with:
           prek-version: '0.5.7'
 
