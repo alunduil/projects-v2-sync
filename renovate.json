@@ -1,11 +1,16 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>alunduil/renovate-config"],
+  "extends": ["github>alunduil/renovate-config", ":automergeMinor", ":automergeDigest"],
   "packageRules": [
     {
       "description": "typescript-eslint doesn't support TypeScript 7 yet (#58)",
       "matchPackageNames": ["typescript"],
       "allowedVersions": "<7"
+    },
+    {
+      "description": "Under semver a 0.x minor or patch may break, so it waits for review like a major",
+      "matchIsBreaking": true,
+      "automerge": false
     }
   ]
 }
