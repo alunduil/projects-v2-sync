@@ -101,8 +101,8 @@ repos:
         pass_filenames: false
         types: [ts]
       - id: build
-        # A files filter cannot see pnpm-lock.yaml through the top-level
-        # exclude, and the build is fast enough not to need one.
+        # The top-level exclude hides pnpm-lock.yaml from a files filter, and
+        # the build is fast enough to run on every commit.
         name: build
         entry: pnpm run build
         language: system
