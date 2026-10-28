@@ -8,7 +8,7 @@
       "allowedVersions": "<7"
     },
     {
-      "description": "A 0.x minor or patch may break, so it waits for review like a major. Drop with :automergeMinor and :automergeDigest once alunduil/renovate-config#10 lands (#77)",
+      "description": "A 0.x minor or patch may break (#77)",
       "matchIsBreaking": true,
       "automerge": false
     }
