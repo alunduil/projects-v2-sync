@@ -7,3 +7,8 @@
 # without it.
 allowBuilds:
   esbuild: true
+
+# Minutes. Matches the minimumReleaseAge in alunduil/renovate-config, and also
+# covers transitive versions, which Renovate's lock file maintenance does not
+# hold back.
+minimumReleaseAge: 4320
