@@ -101,8 +101,6 @@ repos:
         pass_filenames: false
         types: [ts]
       - id: build
-        # The runner executes the committed dist/, so rebuild it on every
-        # commit and let the modified-files check fail until it is staged.
         # A files filter cannot see pnpm-lock.yaml through the top-level
         # exclude, and the build is fast enough not to need one.
         name: build
