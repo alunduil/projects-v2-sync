@@ -7,3 +7,8 @@
 # without it.
 allowBuilds:
   esbuild: true
+
+# Renovate's lock file maintenance skips its release-age wait, so pnpm enforces
+# one on every version. 4320 minutes is three days, matching
+# alunduil/renovate-config.
+minimumReleaseAge: 4320
