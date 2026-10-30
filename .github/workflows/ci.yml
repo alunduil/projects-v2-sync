@@ -20,8 +20,30 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  check:
-    name: Lint, typecheck, and test
+  hooks:
+    name: Run pre-commit hooks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # The local hooks, lint and typecheck among them, run from node_modules.
+      - uses: ./.github/actions/setup-node-pnpm
+
+      # The bundle job reports a stale dist/.
+      - name: Run hooks
+        uses: j178/prek-action@44924fe9ef4a6f88253c4b6b1bf11c689d3ce53d # v3.1.0
+        env:
+          SKIP: build
+        with:
+          prek-version: '0.5.7'
+
+  unit-tests:
+    name: Run unit tests
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -32,14 +54,6 @@ jobs:
           persist-credentials: false
 
       - uses: ./.github/actions/setup-node-pnpm
-
-      # Lint and typecheck run as hooks. The bundle job reports a stale dist/.
-      - name: Run hooks
-        uses: j178/prek-action@44924fe9ef4a6f88253c4b6b1bf11c689d3ce53d # v3.1.0
-        env:
-          SKIP: build
-        with:
-          prek-version: '0.5.7'
 
       - name: Test
         run: pnpm run test
