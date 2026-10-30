@@ -34,6 +34,20 @@ repos:
     hooks:
       - id: markdownlint-cli2
 
+  # sync installs the Packages .vale.ini declares; without it the lint loads
+  # no rules and passes silently. The lint blocks on errors only.
+  - repo: https://github.com/errata-ai/vale
+    rev: v3.25.1
+    hooks:
+      - id: vale
+        name: vale sync
+        args: [sync]
+        pass_filenames: false
+        always_run: true
+      - id: vale
+        args: [--output=line, --minAlertLevel=error]
+        types: [markdown]
+
   - repo: https://github.com/adrienverge/yamllint
     rev: v1.38.0
     hooks:
