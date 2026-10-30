@@ -21,7 +21,3 @@ test-results/
 
 # dist/ is deliberately not ignored. A Node action runs the checked-in bundle:
 # the runner executes runs.main straight from the clone, with no install step.
-
-# Vale packages, downloaded by `vale sync`. The project vocabulary is ours.
-.vale/styles/*/
-!.vale/styles/config/
