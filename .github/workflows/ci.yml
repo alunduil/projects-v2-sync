@@ -81,6 +81,20 @@ jobs:
             exit 1
           fi
 
+  # Renovate commits only the lockfile, so an update that changes the bundle
+  # needs the build hook's rebuilt dist/ pushed back to its branch.
+  fix-renovate-hooks:
+    name: Fix hooks on the Renovate branch
+    # Renovate updates the pin only through the trailing `# main` comment.
+    # yamllint disable-line rule:line-length
+    uses: alunduil/renovate-config/.github/workflows/fix-renovate-hooks.yml@ff872063ec22851e3a0e9d331a631fe61df40f57 # main
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      node-version-file: .nvmrc
+      hook-runner: prek
+
   # Nothing else here proves the bundle loads: the other jobs run the sources,
   # and the bundle's CommonJS interop can only fail at runtime.
   action:
