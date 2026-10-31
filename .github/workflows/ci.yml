@@ -104,8 +104,8 @@ jobs:
           spec: ${{ runner.temp }}/spec.json
           token: placeholder-until-the-reconciler-lands
 
-  # Renovate commits only the lockfile, so an update that changes the bundle
-  # needs the build hook's rebuilt dist/ pushed back to its branch.
+  # Renovate commits only the lockfile, so a bundle change needs dist/ rebuilt
+  # on its branch.
   fix-renovate-hooks:
     name: Fix hooks on the Renovate branch
     # Renovate updates the pin only through the trailing `# main` comment.
