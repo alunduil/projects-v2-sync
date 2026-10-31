@@ -37,8 +37,7 @@ precedence = "aggregate"
 SPDX-FileCopyrightText = "2026 Alex Brandt <alunduil@gmail.com>"
 SPDX-License-Identifier = "MIT"
 
-# Vale style packages, vendored from `vale sync`. Each keeps its upstream
-# licence.
+# Vendored Vale packages keep their upstream licences.
 
 [[annotations]]
 path = ".vale/styles/Microsoft/**"

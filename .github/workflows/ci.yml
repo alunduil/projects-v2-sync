@@ -31,7 +31,7 @@ jobs:
         with:
           persist-credentials: false
 
-      # The local hooks, lint and typecheck among them, run from node_modules.
+      # The local hooks run from node_modules.
       - uses: ./.github/actions/setup-node-pnpm
 
       - name: Run hooks
@@ -58,12 +58,11 @@ jobs:
       - name: Test
         run: pnpm run test
 
-  # A squash merge takes the pull request title as its commit subject, so this
-  # is the gate on what reaches main; the conventional-pre-commit hook only
-  # sees branch commits. Both default to the same Conventional Commits types.
+  # A squash merge takes the PR title as its commit subject, so this check
+  # gates what reaches main. The default type list matches the
+  # conventional-pre-commit hook's.
   #
-  # A corrected title revalidates on the next push or a manual re-run, not on
-  # the edit itself.
+  # Editing the title alone doesn't rerun the check; push or re-run it.
   pr-title:
     name: Validate PR title
     if: github.event_name == 'pull_request'
