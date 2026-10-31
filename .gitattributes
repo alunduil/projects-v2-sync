@@ -7,3 +7,7 @@
 # review. Collapsing it keeps a pull request's diff to the sources that
 # produced it, and marks it generated in language statistics.
 dist/** -diff linguist-generated=true
+
+# Vendored Vale packages, written by `vale sync`. Local diffs stay on, so a
+# resync shows which rules changed.
+.vale/styles/** linguist-generated=true

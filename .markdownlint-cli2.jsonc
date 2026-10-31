@@ -6,5 +6,5 @@
     // fit a column. Leaving MD013 on makes the two tools disagree.
     "MD013": false,
   },
-  "ignores": ["node_modules", "dist", "coverage", "test-results", "pnpm-lock.yaml"],
+  "ignores": ["node_modules", "dist", "coverage", "test-results", "pnpm-lock.yaml", ".vale/styles"],
 }

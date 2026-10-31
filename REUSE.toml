@@ -36,3 +36,23 @@ path = "LICENSE"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2026 Alex Brandt <alunduil@gmail.com>"
 SPDX-License-Identifier = "MIT"
+
+# Vendored Vale packages keep their upstream licences.
+
+[[annotations]]
+path = ".vale/styles/Microsoft/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2018 - 2019 Joseph Kato"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = ".vale/styles/alex/**"
+precedence = "override"
+SPDX-FileCopyrightText = ["2020 errata.ai", "2015 Titus Wormer <tituswormer@gmail.com>"]
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = ".vale/styles/proselint/**"
+precedence = "override"
+SPDX-FileCopyrightText = ["2019 errata.ai", "2014–2015 Jordan Suchow, Michael Pacer, and Lara A. Ross"]
+SPDX-License-Identifier = "BSD-3-Clause"
