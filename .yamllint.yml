@@ -32,3 +32,4 @@ ignore: |
   coverage/
   test-results/
   pnpm-lock.yaml
+  .vale/styles/

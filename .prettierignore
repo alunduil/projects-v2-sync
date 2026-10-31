@@ -8,3 +8,6 @@ node_modules/
 coverage/
 test-results/
 pnpm-lock.yaml
+
+# Vendored Vale packages, kept byte-identical to upstream.
+.vale/styles/

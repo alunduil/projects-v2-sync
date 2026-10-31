@@ -113,10 +113,10 @@ prek install --hook-type pre-commit --hook-type commit-msg
 
 `dist/` is committed, because a Node action runs the checked-in bundle with no
 install step on the runner. Rebuild and commit it in the same change as any
-source edit — CI fails when the two disagree.
+source edit. CI fails when the two disagree.
 
 ## License
 
-[MIT](LICENSE). This repository follows [REUSE](https://reuse.software) — every
+[MIT](LICENSE). This repository follows [REUSE](https://reuse.software): every
 file carries its copyright and licence, inline or through
 [`REUSE.toml`](REUSE.toml).
