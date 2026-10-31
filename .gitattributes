@@ -8,6 +8,6 @@
 # produced it, and marks it generated in language statistics.
 dist/** -diff linguist-generated=true
 
-# Vendored Vale packages, written by `vale sync`. Collapsed in pull requests;
-# local diffs stay on so a resync shows which rules changed.
+# Vendored Vale packages, written by `vale sync`. Local diffs stay on, so a
+# resync shows which rules changed.
 .vale/styles/** linguist-generated=true
