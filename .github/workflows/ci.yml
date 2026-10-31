@@ -3,7 +3,7 @@
 ---
 name: CI
 
-# Every sensor that runs on an integration event.
+# Every job that runs on an integration event.
 on:
   pull_request:
   push:
@@ -103,3 +103,17 @@ jobs:
         with:
           spec: ${{ runner.temp }}/spec.json
           token: placeholder-until-the-reconciler-lands
+
+  # Renovate commits only the lockfile, so a bundle change needs dist/ rebuilt
+  # on its branch.
+  fix-renovate-hooks:
+    name: Fix hooks on the Renovate branch
+    # Renovate updates the pin only through the trailing `# main` comment.
+    # yamllint disable-line rule:line-length
+    uses: alunduil/renovate-config/.github/workflows/fix-renovate-hooks.yml@ff872063ec22851e3a0e9d331a631fe61df40f57 # main
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      node-version-file: .nvmrc
+      hook-runner: prek
