@@ -16,7 +16,7 @@ jobs:
   # the Dependency Dashboard, so a stale dashboard means Renovate has stopped.
   renovate-liveness:
     name: Check Renovate liveness
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
       issues: read
