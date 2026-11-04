@@ -37,7 +37,7 @@ repos:
 
   # The packages .vale.ini declares are vendored under .vale/styles/.
   - repo: https://github.com/errata-ai/vale
-    rev: v3.25.1
+    rev: v3.26.0
     hooks:
       - id: vale
         args: [--output=line, --minAlertLevel=error]
