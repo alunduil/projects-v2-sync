@@ -40,7 +40,7 @@ jobs:
           # The bundle job reports a stale dist/.
           SKIP: build
         with:
-          prek-version: 'v0.5.9'
+          prek-version: 'v0.5.10'
 
   unit-tests:
     name: Run unit tests
