@@ -1,0 +1,8 @@
+# SPDX-FileCopyrightText: 2026 Alex Brandt <alunduil@gmail.com>
+# SPDX-License-Identifier: MIT
+---
+self-hosted-runner:
+  # GitHub-hosted, but newer than actionlint's built-in label list
+  # (rhysd/actionlint#682). Delete once a release knows it.
+  labels:
+    - ubuntu-26.04
