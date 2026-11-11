@@ -137,6 +137,55 @@ jobs:
           spec: ${{ runner.temp }}/spec.json
           token: placeholder-until-the-reconciler-lands
 
+  # The required checks above never execute daily.yml, so a runner image or
+  # action update there would first run on main. Its job is read-only, so
+  # the pull request runs it as is.
+  workflow-changes:
+    name: Detect workflow changes
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      pull-requests: read
+    outputs:
+      changed: ${{ steps.files.outputs.changed }}
+    steps:
+      - id: files
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          files=$(gh api --paginate "repos/$REPO/pulls/$NUMBER/files" \
+            --jq '.[].filename | select(test("^\\.github/(workflows|actions)/"))')
+          echo "changed=$([[ -n $files ]] && echo true || echo false)" >>"${GITHUB_OUTPUT}"
+
+  # A called workflow can't exceed its caller's grant.
+  dry-run-daily:
+    name: Dry-run Daily
+    needs: workflow-changes
+    if: needs.workflow-changes.outputs.changed == 'true'
+    uses: ./.github/workflows/daily.yml
+    permissions:
+      issues: read
+
+  # Branch protection requires this job by name, since the dry runs it
+  # gathers are skipped on most pull requests.
+  dry-run-results:
+    name: Check workflow dry runs
+    needs:
+      - workflow-changes
+      - dry-run-daily
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Fail when any dry run failed or was cancelled
+        if: >-
+          contains(needs.*.result, 'failure')
+          || contains(needs.*.result, 'cancelled')
+        run: exit 1
+
   # Renovate commits only the lockfile, so a bundle change needs dist/ rebuilt
   # on its branch.
   fix-renovate-hooks:

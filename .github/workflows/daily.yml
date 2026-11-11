@@ -8,6 +8,9 @@ on:
     - cron: '0 6 * * *'
       timezone: Europe/London
   workflow_dispatch:
+  # CI calls this on pull requests that change a workflow, so a runner or
+  # action update here runs before merge.
+  workflow_call:
 
 permissions: {}
 
