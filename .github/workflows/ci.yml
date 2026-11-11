@@ -140,8 +140,8 @@ jobs:
   # The required checks above never execute daily.yml, so a runner image or
   # action update there would first run on main. Its job is read-only, so
   # the pull request runs it as is.
-  workflow-changes:
-    name: Detect workflow changes
+  daily-changes:
+    name: Detect daily.yml changes
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-24.04
     timeout-minutes: 5
@@ -157,14 +157,14 @@ jobs:
           NUMBER: ${{ github.event.pull_request.number }}
         run: |
           files=$(gh api --paginate "repos/$REPO/pulls/$NUMBER/files" \
-            --jq '.[].filename | select(test("^\\.github/(workflows|actions)/"))')
+            --jq '.[].filename | select(. == ".github/workflows/daily.yml")')
           echo "changed=$([[ -n $files ]] && echo true || echo false)" >>"${GITHUB_OUTPUT}"
 
   # A called workflow can't exceed its caller's grant.
   dry-run-daily:
     name: Dry-run Daily
-    needs: workflow-changes
-    if: needs.workflow-changes.outputs.changed == 'true'
+    needs: daily-changes
+    if: needs.daily-changes.outputs.changed == 'true'
     uses: ./.github/workflows/daily.yml
     permissions:
       issues: read
@@ -174,7 +174,7 @@ jobs:
   dry-run-results:
     name: Check workflow dry runs
     needs:
-      - workflow-changes
+      - daily-changes
       - dry-run-daily
     if: always()
     runs-on: ubuntu-24.04
