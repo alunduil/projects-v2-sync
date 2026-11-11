@@ -137,9 +137,9 @@ jobs:
           spec: ${{ runner.temp }}/spec.json
           token: placeholder-until-the-reconciler-lands
 
-  # The required checks above never execute daily.yml, so a runner image or
-  # action update there would first run on main. Its job is read-only, so
-  # the pull request runs it as is.
+  # No other job executes daily.yml, so the dry run is the only test of a
+  # runner image or action update to it before merge. Its job only reads,
+  # so running it on a pull request is safe.
   daily-changes:
     name: Detect daily.yml changes
     if: github.event_name == 'pull_request'
@@ -160,7 +160,8 @@ jobs:
             --jq '.[].filename | select(. == ".github/workflows/daily.yml")')
           echo "changed=$([[ -n $files ]] && echo true || echo false)" >>"${GITHUB_OUTPUT}"
 
-  # A called workflow can't exceed its caller's grant.
+  # daily.yml's jobs get at most this grant; a permission added there needs
+  # adding here too.
   dry-run-daily:
     name: Dry-run Daily
     needs: daily-changes
@@ -169,8 +170,8 @@ jobs:
     permissions:
       issues: read
 
-  # Branch protection requires this job by name, since the dry runs it
-  # gathers are skipped on most pull requests.
+  # Reports on every pull request, unlike the dry runs it gathers, so branch
+  # protection can require it.
   dry-run-results:
     name: Check workflow dry runs
     needs:
