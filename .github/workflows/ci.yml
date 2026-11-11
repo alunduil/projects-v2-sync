@@ -137,6 +137,56 @@ jobs:
           spec: ${{ runner.temp }}/spec.json
           token: placeholder-until-the-reconciler-lands
 
+  # No other job executes daily.yml, so the dry run is the only test of a
+  # runner image or action update to it before merge. Its job only reads,
+  # so running it on a pull request is safe.
+  daily-changes:
+    name: Detect daily.yml changes
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      pull-requests: read
+    outputs:
+      changed: ${{ steps.files.outputs.changed }}
+    steps:
+      - id: files
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          files=$(gh api --paginate "repos/$REPO/pulls/$NUMBER/files" \
+            --jq '.[].filename | select(. == ".github/workflows/daily.yml")')
+          echo "changed=$([[ -n $files ]] && echo true || echo false)" >>"${GITHUB_OUTPUT}"
+
+  # daily.yml's jobs get at most this grant; a permission added there needs
+  # adding here too.
+  dry-run-daily:
+    name: Dry-run Daily
+    needs: daily-changes
+    if: needs.daily-changes.outputs.changed == 'true'
+    uses: ./.github/workflows/daily.yml
+    permissions:
+      issues: read
+
+  # Reports on every pull request, unlike the dry runs it gathers, so branch
+  # protection can require it.
+  dry-run-results:
+    name: Check workflow dry runs
+    needs:
+      - daily-changes
+      - dry-run-daily
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Fail when any dry run failed or was cancelled
+        if: >-
+          contains(needs.*.result, 'failure')
+          || contains(needs.*.result, 'cancelled')
+        run: exit 1
+
   # Renovate commits only the lockfile, so a bundle change needs dist/ rebuilt
   # on its branch.
   fix-renovate-hooks:

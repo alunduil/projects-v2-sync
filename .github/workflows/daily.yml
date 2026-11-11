@@ -8,6 +8,8 @@ on:
     - cron: '0 6 * * *'
       timezone: Europe/London
   workflow_dispatch:
+  # Lets CI test a change to this file before merge.
+  workflow_call:
 
 permissions: {}
 
