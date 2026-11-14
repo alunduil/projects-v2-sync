@@ -193,7 +193,7 @@ jobs:
     name: Fix hooks on the Renovate branch
     # Renovate updates the pin only through the trailing `# main` comment.
     # yamllint disable-line rule:line-length
-    uses: alunduil/renovate-config/.github/workflows/fix-renovate-hooks.yml@4839a25ab45c4b93615dcf806b23e45138bdc9ac # main
+    uses: alunduil/renovate-config/.github/workflows/fix-renovate-hooks.yml@33ad7410997c868a86e98c793d6c651a256d1993 # main
     permissions:
       contents: read
       id-token: write
