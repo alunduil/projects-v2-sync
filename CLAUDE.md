@@ -6,6 +6,6 @@ SPDX-License-Identifier: MIT
 # Claude Code instructions for projects-v2-sync
 
 Claude Code reads this file in place of `AGENTS.md`. Add a rule here only when
-it's false for every other agent.
+it applies to Claude Code alone.
 
 @AGENTS.md
