@@ -13,16 +13,11 @@
       "allowedVersions": "<7"
     },
     {
-      "description": "A 0.x minor or patch may break (#77)",
+      "description": "A 0.x minor or patch may break (#77), unless a required check runs it on the PR: Run pre-commit hooks runs prek",
+      "matchDepNames": ["!prek"],
       "matchUpdateTypes": ["minor", "patch"],
       "matchIsBreaking": true,
       "automerge": false
-    },
-    {
-      "description": "Run pre-commit hooks runs every prek update on the PR, so a breaking 0.x release turns it red",
-      "matchDepNames": ["prek"],
-      "matchUpdateTypes": ["minor", "patch"],
-      "automerge": true
     }
   ]
 }
