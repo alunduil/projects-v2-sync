@@ -17,6 +17,12 @@
       "matchUpdateTypes": ["minor", "patch"],
       "matchIsBreaking": true,
       "automerge": false
+    },
+    {
+      "description": "Run pre-commit hooks runs every prek update on the PR, so a breaking 0.x release turns it red",
+      "matchDepNames": ["prek"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
     }
   ]
 }
