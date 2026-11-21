@@ -13,7 +13,8 @@
       "allowedVersions": "<7"
     },
     {
-      "description": "A 0.x minor or patch may break (#77)",
+      "description": "A 0.x minor or patch may break (#77). The `Run pre-commit hooks` check catches a breaking prek release before merge.",
+      "matchDepNames": ["!prek"],
       "matchUpdateTypes": ["minor", "patch"],
       "matchIsBreaking": true,
       "automerge": false
