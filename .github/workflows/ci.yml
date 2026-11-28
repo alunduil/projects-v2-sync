@@ -201,8 +201,7 @@ jobs:
       node-version-file: .nvmrc
       hook-runner: prek
 
-  # Renovate automerges a branch carrying the hook fixes above; this holds it
-  # for the owner's approval. review.yml re-runs it on that approval.
+  # An approval clears this check only through the re-run in review.yml.
   check-renovate-commits:
     name: Check Renovate branch commits
     # yamllint disable-line rule:line-length
